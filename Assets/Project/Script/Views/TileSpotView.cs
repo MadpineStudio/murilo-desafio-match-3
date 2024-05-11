@@ -8,7 +8,6 @@ namespace Gazeus.DesafioMatch3.Views
     public class TileSpotView : MonoBehaviour
     {
         public event Action<int, int> Clicked;
-
         [SerializeField] private Button _button;
 
         private int _x;

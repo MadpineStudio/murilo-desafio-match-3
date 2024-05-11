@@ -15,10 +15,10 @@ namespace Gazeus.DesafioMatch3.Views
         [SerializeField] private GridLayoutGroup _boardContainer;
         [SerializeField] private TilePrefabRepository _tilePrefabRepository;
         [SerializeField] private TileSpotView _tileSpotPrefab;
-
+        
         private GameObject[][] _tiles;
         private TileSpotView[][] _tileSpots;
-
+        
         public void CreateBoard(List<List<Tile>> board)
         {
             _boardContainer.constraintCount = board[0].Count;
@@ -51,7 +51,6 @@ namespace Gazeus.DesafioMatch3.Views
                 }
             }
         }
-
         public Tween CreateTile(List<AddedTileInfo> addedTiles)
         {
             Sequence sequence = DOTween.Sequence();
@@ -71,22 +70,30 @@ namespace Gazeus.DesafioMatch3.Views
                 tile.transform.localScale = Vector2.zero;
                 sequence.Join(tile.transform.DOScale(1.0f, 0.2f));
             }
-
             return sequence;
         }
-
         public Tween DestroyTiles(List<Vector2Int> matchedPosition)
         {
+            Vector3[] targetRectPos = new Vector3[matchedPosition.Count];
+            Sequence animationJellySequence = DOTween.Sequence();
+
             for (int i = 0; i < matchedPosition.Count; i++)
             {
                 Vector2Int position = matchedPosition[i];
-                Destroy(_tiles[position.y][position.x]);
+                targetRectPos[i] = _tiles[position.y][position.x].transform.position;
+                
+                animationJellySequence.Join(_tiles[position.y][position.x].transform.DOScale(1.3f, .5f)
+                    .SetEase(Ease.InCirc));
+                animationJellySequence.Insert(0, _tiles[position.y][position.x].transform.DOMove(new Vector3(10, 8, 0), .8f)
+                    .SetEase(Ease.InCirc));
+
+                _tiles[position.y][position.x].transform.GetChild(0).GetComponent<Image>().material.SetFloat("_Glow", 2f);
+                Destroy(_tiles[position.y][position.x].gameObject, 1.4f);
                 _tiles[position.y][position.x] = null;
             }
-
-            return DOVirtual.DelayedCall(0.2f, () => { });
+            
+            return DOVirtual.DelayedCall(0f, () => { FXManager.Instance.Correct(targetRectPos);});
         }
-
         public Tween MoveTiles(List<MovedTileInfo> movedTiles)
         {
             GameObject[][] tiles = new GameObject[_tiles.Length][];
@@ -113,10 +120,8 @@ namespace Gazeus.DesafioMatch3.Views
             }
 
             _tiles = tiles;
-
             return sequence;
         }
-
         public Tween SwapTiles(int fromX, int fromY, int toX, int toY)
         {
             Sequence sequence = DOTween.Sequence();
@@ -125,13 +130,15 @@ namespace Gazeus.DesafioMatch3.Views
 
             (_tiles[toY][toX], _tiles[fromY][fromX]) = (_tiles[fromY][fromX], _tiles[toY][toX]);
 
+            FXManager.Instance.MoveWhip();
+            
             return sequence;
         }
 
         #region Events
         private void TileSpot_Clicked(int x, int y)
         {
-            TileClicked(x, y);
+            TileClicked!(x, y);
         }
         #endregion
     }
