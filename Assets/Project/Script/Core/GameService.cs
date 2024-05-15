@@ -229,7 +229,7 @@ namespace Gazeus.DesafioMatch3.Core
                         newBoard[y][x - 1].Type == newBoard[y][x - 2].Type)
                     {
                         //check if the combination is greater than 3, if so, destroy / prepare all the tiles from current the collumn to destroy
-                        if (x + 1 < 10 && newBoard[y][x + 1].Type ==  newBoard[y][x].Type)
+                        if (x + 1 < newBoard[y].Count && newBoard[y][x + 1].Type ==  newBoard[y][x].Type)
                         {
                             for (int i = 0; i < newBoard[y].Count; i++)
                             {
@@ -252,7 +252,7 @@ namespace Gazeus.DesafioMatch3.Core
                     {
 
                         //check if the combination is greater than 3, if so, destroy / prepare all the tiles from the current row to destroy
-                        if (y + 1 < 10 && newBoard[y + 1][x].Type ==  newBoard[y][x].Type)
+                        if (y + 1 < newBoard.Count && newBoard[y + 1][x].Type ==  newBoard[y][x].Type)
                         {
                             for (int i = 0; i < newBoard.Count; i++)
                             {
