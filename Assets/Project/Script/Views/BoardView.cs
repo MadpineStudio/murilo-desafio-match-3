@@ -76,7 +76,8 @@ namespace Gazeus.DesafioMatch3.Views
             Vector3[] targetRectPos = new Vector3[matchedPosition.Count];
             Sequence animationJellySequence = DOTween.Sequence();
             
-            if(matchedPosition.Count >= 10)
+            // destroyed a full collumn or full row FX
+            if(matchedPosition.Count >= _tiles[0].Length)
                 FXManager.Instance.DestroyLineOrCollumn();
 
             for (int i = 0; i < matchedPosition.Count; i++)

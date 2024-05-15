@@ -235,6 +235,7 @@ namespace Gazeus.DesafioMatch3.Core
                             {
                                 matchedTiles[y][i] = true;
                             }
+                            // breaks the loop when destroy a full collumn
                             x = newBoard[y].Count - 1;
                         }
                         else
@@ -257,6 +258,7 @@ namespace Gazeus.DesafioMatch3.Core
                             {
                                 matchedTiles[i][x] = true;
                             }
+                            // breaks the loop when destroy a full collumn
                             y = newBoard.Count -1;
                         }
                         else
