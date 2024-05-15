@@ -45,7 +45,6 @@ namespace Gazeus.DesafioMatch3.Views
                         GameObject tilePrefab = _tilePrefabRepository.TileTypePrefabList[tileTypeIndex];
                         GameObject tile = Instantiate(tilePrefab);
                         tileSpot.SetTile(tile);
-
                         _tiles[y][x] = tile;
                     }
                 }
@@ -76,23 +75,27 @@ namespace Gazeus.DesafioMatch3.Views
         {
             Vector3[] targetRectPos = new Vector3[matchedPosition.Count];
             Sequence animationJellySequence = DOTween.Sequence();
+            
+            if(matchedPosition.Count >= 10)
+                FXManager.Instance.DestroyLineOrCollumn();
 
             for (int i = 0; i < matchedPosition.Count; i++)
             {
                 Vector2Int position = matchedPosition[i];
                 targetRectPos[i] = _tiles[position.y][position.x].transform.position;
                 
-                animationJellySequence.Join(_tiles[position.y][position.x].transform.DOScale(1.3f, .5f)
+                animationJellySequence.Join(_tiles[position.y][position.x].transform.DOScale(1.5f, .5f)
                     .SetEase(Ease.InCirc));
-                animationJellySequence.Insert(0, _tiles[position.y][position.x].transform.DOMove(new Vector3(10, 8, 0), .8f)
+                animationJellySequence.Insert(0, _tiles[position.y][position.x].transform.DOMove(new Vector3(10, 8, 12), .8f)
                     .SetEase(Ease.InCirc));
 
                 _tiles[position.y][position.x].transform.GetChild(0).GetComponent<Image>().material.SetFloat("_Glow", 2f);
+                
                 Destroy(_tiles[position.y][position.x].gameObject, 1.4f);
                 _tiles[position.y][position.x] = null;
             }
             
-            return DOVirtual.DelayedCall(0f, () => { FXManager.Instance.Correct(targetRectPos);});
+            return DOVirtual.DelayedCall(0f, () => { FXManager.Instance.DestroySimpleSequence(targetRectPos);});
         }
         public Tween MoveTiles(List<MovedTileInfo> movedTiles)
         {

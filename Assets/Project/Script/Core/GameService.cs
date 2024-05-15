@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Gazeus.DesafioMatch3.Models;
+using Gazeus.DesafioMatch3.Views;
 using UnityEngine;
 
 namespace Gazeus.DesafioMatch3.Core
@@ -227,18 +228,43 @@ namespace Gazeus.DesafioMatch3.Core
                         newBoard[y][x].Type == newBoard[y][x - 1].Type &&
                         newBoard[y][x - 1].Type == newBoard[y][x - 2].Type)
                     {
-                        matchedTiles[y][x] = true;
-                        matchedTiles[y][x - 1] = true;
-                        matchedTiles[y][x - 2] = true;
+                        //check if the combination is greater than 3, if so, destroy / prepare all the tiles from current the collumn to destroy
+                        if (x + 1 < 10 && newBoard[y][x + 1].Type ==  newBoard[y][x].Type)
+                        {
+                            for (int i = 0; i < newBoard[y].Count; i++)
+                            {
+                                matchedTiles[y][i] = true;
+                            }
+                            x = newBoard[y].Count - 1;
+                        }
+                        else
+                        {
+                            matchedTiles[y][x] = true;
+                            matchedTiles[y][x - 1] = true;
+                            matchedTiles[y][x - 2] = true;
+                        }
                     }
 
                     if (y > 1 &&
                         newBoard[y][x].Type == newBoard[y - 1][x].Type &&
                         newBoard[y - 1][x].Type == newBoard[y - 2][x].Type)
                     {
-                        matchedTiles[y][x] = true;
-                        matchedTiles[y - 1][x] = true;
-                        matchedTiles[y - 2][x] = true;
+
+                        //check if the combination is greater than 3, if so, destroy / prepare all the tiles from the current row to destroy
+                        if (y + 1 < 10 && newBoard[y + 1][x].Type ==  newBoard[y][x].Type)
+                        {
+                            for (int i = 0; i < newBoard.Count; i++)
+                            {
+                                matchedTiles[i][x] = true;
+                            }
+                            y = newBoard.Count -1;
+                        }
+                        else
+                        {
+                            matchedTiles[y][x] = true;
+                            matchedTiles[y - 1][x] = true;
+                            matchedTiles[y - 2][x] = true;
+                        }
                     }
                 }
             }
